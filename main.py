@@ -87,14 +87,37 @@ def one_letter_at_a_time(input_text, **args):
 
 
 def exit():
-    one_letter_at_a_time("ゲームを終了します", color="red")
-    sys.exit()
+    one_letter_at_a_time("本当にゲームを終了しますか？", color="red", delay_time=0.05)
+    user_ans = choose_option(["終了", "続ける"])
+    if user_ans == 0:
+        sys.exit()
 
 
 def ask_continue():
     ans = console.input("[blink]___[/]")
     if ans == "b":
         exit()
+
+
+def choose_option(options):
+    def choose(option_len):
+        user_ans = input(">>")
+        try:
+            user_ans = int(user_ans)
+        except ValueError:
+            print("[red]上の選択肢から選んでください[/]")
+            return choose(option_len)
+
+        if user_ans in range(option_len):
+            return user_ans
+        else:
+            print("[red]上の選択肢から選んでください[/]")
+            return choose(option_len)
+
+    for i, option in enumerate(options):
+        print(f"[green]{i}[/]:{option}")
+
+    return choose(len(options))
 
 
 # richモジュールのインストール確認と、インポート
@@ -104,7 +127,6 @@ try:
     from rich import print
     from rich.console import Console
     print("[green]import rich OK![/]")
-    time.sleep(1)
     clear_console()
 except Exception as e:
     print("Error import rich")
